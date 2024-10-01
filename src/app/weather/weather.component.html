@@ -1,0 +1,15 @@
+<div class="mt-10 mx-auto max-w-xl max-h-full p-7
+    bg-blue-500
+    flex-col
+    justify-items-center
+    rounded
+    shadow-xl
+    ring-4
+    ring-blue-300
+">
+    <app-recent-weather [todayWeather]="todayWeather!" [todayLocation]="todayLocation!"/>
+    <app-forecasts [forecasts]="response!.cuaca[0]"/>
+</div>
+<div class="mx-auto max-w-4xl max-h-full p-7">
+    <app-maps/>
+</div>

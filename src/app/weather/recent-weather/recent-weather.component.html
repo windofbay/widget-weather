@@ -1,0 +1,12 @@
+<div class="mb-6">
+    <div class="flex justify-between">
+        <div class="text-white flex flex-col">
+            <div class="flex text-6xl">{{todayWeather.t}} <span class="text-2xl">°C</span></div>
+            <span class="font-semibold mt-1">{{todayLocation.desa}}</span>
+
+        </div>
+        <div class="text-4xl">
+            <img [src]="todayWeather.image" alt="">
+        </div>
+    </div>
+</div>

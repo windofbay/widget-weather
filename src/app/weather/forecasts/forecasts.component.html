@@ -1,0 +1,9 @@
+<div class="py-3 mb-3 flex gap-12 justify-items-start  overflow-x-hidden hover:overflow-x-auto">
+    @for (forecast of forecasts; track $index) {
+        <div class="flex flex-col items-center px-3 py-1 bg-blue-400 rounded">
+            <span class="text-white">{{getTime(forecast.datetime) }}</span>
+            <span><img class="h-10" [src]="forecast.image" alt=""></span>
+            <span class="text-slate-300">{{forecast.t}}°C</span>
+        </div>
+    }
+</div>
