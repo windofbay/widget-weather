@@ -13,5 +13,6 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 export const environment = {
-  apiUrl:'https://api.bmkg.go.id/publik/prakiraan-cuaca'
+  apiUrl:'https://api.bmkg.go.id/publik/prakiraan-cuaca',
+  placesUrl:"https://wilayah.id/api",
 }
