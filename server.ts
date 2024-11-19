@@ -55,3 +55,6 @@ function run(): void {
 }
 
 run();
+// const MockBrowser = require('mock-browser').mocks.MockBrowser;
+// const mock = new MockBrowser();
+// global['window'] = mock.getWindow()

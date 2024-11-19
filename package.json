@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:Tails": "node dist/tails/server/server.mjs",
-    "Tails": "npx tailwindcss -i ./src/styles.css -o ./src/output.css --watch"
+    "Weather": "npx tailwindcss -i ./src/styles.css -o ./src/output.css --watch"
   },
   "private": true,
   "dependencies": {
@@ -23,7 +23,11 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.0",
+    "@asymmetrik/ngx-leaflet": "^18.0.1",
+    "@types/leaflet": "^1.9.14",
     "express": "^4.18.2",
+    "leaflet": "^1.9.4",
+    "mock-browser": "^0.92.14",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"

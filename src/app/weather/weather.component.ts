@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
 import { RecentWeatherComponent } from './recent-weather/recent-weather.component';
 import { ForecastsComponent } from './forecasts/forecasts.component';
 import { WeatherService } from './weather.service';
 import { WeatherDetail } from './weather-detail.model';
 import { Lokasi } from './location.model';
 import { MapsComponent } from "./maps/maps.component";
+import { log } from 'node:console';
 
 @Component({
   selector: 'app-weather',
@@ -13,7 +14,7 @@ import { MapsComponent } from "./maps/maps.component";
   templateUrl: './weather.component.html',
   styleUrl: './weather.component.css'
 })
-export class WeatherComponent implements OnInit {
+export class WeatherComponent implements OnInit{
   private weatherService = inject(WeatherService);
   response?:any;
   constructor() { }
@@ -21,7 +22,7 @@ export class WeatherComponent implements OnInit {
   todayWeathers?:WeatherDetail[];
   todayLocation?:Lokasi;
   ngOnInit(): void {
-    this.weatherService.getWeather().subscribe((res)=>{
+    this.weatherService.getWeather().subscribe((res)=>{      
       this.response=res.data[0];
       this.todayWeathers = this.response.cuaca[0];
       this.todayLocation = this.response.lokasi;
@@ -35,14 +36,11 @@ export class WeatherComponent implements OnInit {
     })
     const currentHour =  new Date().getHours();
     const weather = this.todayWeathers!.find(
-      weather=> new Date(weather.local_datetime).getHours()  === this.floorToClosestNumber(currentHour,hours) 
+      weather=> new Date(weather.local_datetime).getHours()  === this.weatherService.floorToClosestNumber(currentHour,hours) 
     );  
     this.todayWeather = weather;
+    console.log(this.todayWeather);
+    
   }
-  private floorToClosestNumber(input: number, numbers: number[]): number | undefined {
-    // Filter the array to find all numbers less than or equal to the input
-    const possibleNumbers = numbers.filter(num => num <= input);
-    // Return the maximum of the filtered numbers, or undefined if no such number exists
-    return Math.max(...possibleNumbers);
-}
+
 }
