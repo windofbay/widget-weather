@@ -5,9 +5,17 @@ import { WeatherService } from '../weather.service';
 import { WeatherDetail } from '../weather-detail.model';
 import { Region } from '../province.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import * as L from 'leaflet';
-import { isPlatformBrowser } from '@angular/common';
-import { log } from 'console';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import { fromLonLat } from 'ol/proj';
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import Style from 'ol/style/Style';
+import Icon from 'ol/style/Icon';
 
 @Component({
   selector: 'app-maps',
@@ -16,12 +24,10 @@ import { log } from 'console';
   templateUrl: './maps.component.html',
   styleUrl: './maps.component.css'
 })
-export class MapsComponent implements OnInit,AfterViewInit{
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+export class MapsComponent implements OnInit{
   weatherService = inject(WeatherService);
   zoom=10;
   provinces: Region[] = [];
-  //marker: L.Marker | undefined;
   cities:Region[]=[];
   districts:Region[]=[];
   todayWeather?:WeatherDetail;
@@ -34,14 +40,26 @@ export class MapsComponent implements OnInit,AfterViewInit{
     province: new FormControl<string>(''),
     city: new FormControl<string>(''),
   });
+  map:Map | undefined;
+  
   moveToLocation() {
       this.weatherService.getWeatherByCity(this.inputCity.nativeElement.value).then((res)=>{
         res.subscribe((res)=>{
           let todayWeathers:WeatherDetail[]=res.data[0].cuaca[0];
+          let location = res.data[0].lokasi;
+          console.log(location);
           let todayWeather : WeatherDetail = this.setTodayWeather(todayWeathers)
           console.log(todayWeather);
-          //this.addMarker(res.data[0].lokasi.lat,res.data[0].lokasi.lon,todayWeather.image);
-          //this.center = { lat: parseFloat(res.data[0].lokasi.lat), lng: parseFloat(res.data[0].lokasi.lon)};
+          
+          const view = this.map!.getView();
+          view.animate({
+            center: fromLonLat([location.lon, location.lat]),
+            zoom: this.zoom,
+            duration: 500, // Optional: animation duration in milliseconds
+          });
+          this.addMarkers([
+            {long : location.lon, lat: location.lat, weather: todayWeather.weather_desc_en}
+          ]);
         })
       })
   }
@@ -72,12 +90,66 @@ export class MapsComponent implements OnInit,AfterViewInit{
         .subscribe((res)=>{
           this.cities = res.data;
         });
+        
       }
     )    
-
+    this.initMap(106.7738516473, -6.1760722354);
   }
-  map:any;
-  ngAfterViewInit(): void {
-    //this.generateMaps(-6.1760722354, 106.7738516473);
+  initMap(long: number, lat: number) {
+    // Initialize the map
+    this.map = new Map({
+      target: 'map',
+      layers: [
+        new TileLayer({
+          source: new XYZ({
+            url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+          })
+        })
+      ],
+      view: new View({
+        center: fromLonLat([long, lat]),
+        zoom: 10
+      })
+    });
+  
+    // Add a marker
+    this.addMarkers([
+      { long: long, lat: lat, weather:"Sunny" }
+    ]);
   }
+  locations : { long: number; lat: number }[] = [];
+  addMarkers(locations: { long: number; lat: number; weather:string }[]) {
+    const features = locations.map(location => {
+      const feature = new Feature({
+        geometry: new Point(fromLonLat([location.long, location.lat]))
+      });
+  
+      // Set the style for the marker
+      feature.setStyle(
+        new Style({
+          image: new Icon({
+            src: this.weatherService.getWeatherIcon(location.weather), // Marker icon URL
+            scale: 0.3 // Adjust the size of the icon
+          })
+        })
+      );
+  
+      return feature;
+    });
+  
+    // Create a vector source and layer for the markers
+    const markerSource = new VectorSource({
+      features: features
+    });
+  
+    const markerLayer = new VectorLayer({
+      source: markerSource
+    });
+  
+    // Add the marker layer to the map
+    this.map?.addLayer(markerLayer);
+  }
+  
+  
+  
 }

@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../app.config';
 import { catchError, Observable } from 'rxjs';
-import { Weather } from './weather.model';
 import { HttpClient } from '@angular/common/http';
 
 

@@ -1,26 +1,30 @@
 <div class="mx-auto mb-10 justify-start">
     <form [formGroup]="form" class="p-7 border rounded" (ngSubmit)="moveToLocation()">
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Input Latitude</label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" formControlName="latitude" />
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Input Longitude</label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" formControlName="longitude" />
+            <label class="block text-gray-700 text-sm font-bold mb-2">Masukan Provinsi</label>
+            <select class="shadow appearance-none border rounded py-2 px-3 w-full mb-5" #selectProvince formControlName="province">
+                <option value="">Pilih Provinsi</option>
+                @for (province of provinces; track $index) {
+                    <option value="{{province.code}}">{{province.name}}</option>
+                }
+            </select>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Masukan Kota</label>
+            <select class="shadow appearance-none border rounded py-2 px-3 w-full mb-5" #selectCity >
+                <option value="">Pilih Kota/Kabupaten</option>
+                @for (city of cities; track $index) {
+                    <option value="{{city.code}}">{{city.name}}</option>
+                }
+            </select>
+
         </div>
         <div class="flex items-center justify-between">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            <button type="submit" class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
               Go!
             </button>
           </div>
     </form>
 </div>
-<div class="mx-auto mb-10">
-    <input
-      class="bg-white border border-gray-300  focus:ring-blue-800  focus:border-blue-500 block w-50 p-2.5 "
-      (keydown.enter)="$event.preventDefault()"
-      placeholder="Search Location"
-      type="text"
-      #search
-    />
+
+<div id="map" class="h-96">
+
 </div>
